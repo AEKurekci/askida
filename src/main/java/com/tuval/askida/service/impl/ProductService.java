@@ -1,26 +1,26 @@
 package com.tuval.askida.service.impl;
 
-import com.tuval.askida.model.Product;
+import com.tuval.askida.dto.ProductDTO;
+import com.tuval.askida.mapper.ProductMapper;
 import com.tuval.askida.repository.IProductRepository;
 import com.tuval.askida.service.IProductService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService implements IProductService {
 
     private final IProductRepository productRepository;
-
-    public ProductService(IProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+    private final ProductMapper productMapper;
 
     @Override
-    public Product saveProduct(Product product){
+    public ProductDTO saveProduct(ProductDTO product){
         product.setCreateTime(LocalDateTime.now());
-        return productRepository.save(product);
+        return productMapper.toDTO(productRepository.save(productMapper.toModel(product)));
     }
 
     @Override
@@ -29,7 +29,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public List<Product> findAllProducts(){
-        return productRepository.findAll();
+    public List<ProductDTO> findAllProducts(){
+        return productMapper.toDTOList(productRepository.findAll());
     }
 }

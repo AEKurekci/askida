@@ -31,6 +31,10 @@ public class Product {
     private Owner owner;
 
     @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address", referencedColumnName = "id")
+    private Address address;
+
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "category", referencedColumnName = "id")
     private Category category;
 

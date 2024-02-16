@@ -1,14 +1,14 @@
 package com.tuval.askida.service;
 
 
-import com.tuval.askida.model.Product;
+import com.tuval.askida.dto.ProductDTO;
 
 import java.util.List;
 
 public interface IProductService {
-    Product saveProduct(Product product);
+    ProductDTO saveProduct(ProductDTO productDTO);
 
     void deleteProduct(Long productId);
 
-    List<Product> findAllProducts();
+    List<ProductDTO> findAllProducts();
 }

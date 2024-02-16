@@ -20,6 +20,7 @@ public class ProductDTO {
 
     private OwnerDTO ownerDTO;
     private CategoryDTO categoryDTO;
+    private AddressDTO addressDTO;
     private List<ImageInfoDTO> imageDTOs;
     private List<KeywordDTO> keywordDTOs;
 
