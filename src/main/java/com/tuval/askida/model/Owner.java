@@ -17,7 +17,7 @@ public class Owner {
     private Long id;
     @Column(name = "name", nullable = false, length = 100)
     private String name;
-    @Column(name = "image_url", nullable = false)
+    @Column(name = "image_url")
     private String imageURL;
     @Column(name = "sign_date", nullable = false)
     private LocalDateTime signDate;
@@ -27,6 +27,12 @@ public class Owner {
     private Long followersId;
     @Column(name = "favorites_id")
     private Long favoritesId;
+    @Column(name = "phone_no", unique = true, nullable = false, length = 13)
+    private String phoneNo;
+    @Column(name = "email", unique = true, nullable = false, length = 100)
+    private String email;
+    @Column(name = "password", nullable = false)
+    private String password;
 
 
     @OneToOne(cascade = CascadeType.ALL)

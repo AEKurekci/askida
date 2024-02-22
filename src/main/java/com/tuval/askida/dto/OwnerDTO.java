@@ -17,6 +17,9 @@ public class OwnerDTO {
     private Long followersId;
     private Long favoritesId;
     private Long addressId;
+    private String phoneNo;
+    private String email;
+    private String password;
 
     private AddressDTO addressDTO;
 }
