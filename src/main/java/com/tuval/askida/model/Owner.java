@@ -17,6 +17,8 @@ public class Owner {
     private Long id;
     @Column(name = "name", nullable = false, length = 100)
     private String name;
+    @Column(name = "surname", nullable = false, length = 100)
+    private String surname;
     @Column(name = "image_url")
     private String imageURL;
     @Column(name = "sign_date", nullable = false)

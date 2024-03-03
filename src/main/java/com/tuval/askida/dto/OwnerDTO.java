@@ -11,6 +11,7 @@ public class OwnerDTO {
 
     private Long id;
     private String name;
+    private String surname;
     private String imageURL;
     private LocalDateTime signDate;
     private Long followingsId;

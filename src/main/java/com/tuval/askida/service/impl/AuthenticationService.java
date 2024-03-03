@@ -2,7 +2,7 @@ package com.tuval.askida.service.impl;
 
 import com.tuval.askida.request.SignInRequest;
 import com.tuval.askida.security.UserPrincipal;
-import com.tuval.askida.security.jwt.impl.JwtProvider;
+import com.tuval.askida.security.jwt.IJwtProvider;
 import com.tuval.askida.service.IAuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthenticationService implements IAuthenticationService {
     private final AuthenticationManager authenticationManager;
-    private final JwtProvider jwtProvider;
+    private final IJwtProvider jwtProvider;
 
     @Override
     public String signInAndReturnJWT(SignInRequest signInRequest){

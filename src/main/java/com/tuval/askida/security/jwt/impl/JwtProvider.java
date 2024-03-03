@@ -4,7 +4,6 @@ import com.tuval.askida.security.UserPrincipal;
 import com.tuval.askida.security.jwt.IJwtProvider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,10 +19,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -32,6 +28,8 @@ public class JwtProvider implements IJwtProvider {
     private Long JWT_EXPIRATION_IN_MS;
     private static final String JWT_TOKEN_PREFIX = "Bearer";
     private static final String JWT_HEADER_STRING = "Authorization";
+    private static final String USER_ID_CLAIM = "userId";
+    private static final String ROLES_CLAIM = "roles";
 
     private final PrivateKey jwtPrivateKey;
     private final PublicKey jwtPublicKey;
@@ -58,10 +56,21 @@ public class JwtProvider implements IJwtProvider {
                 .collect(Collectors.joining());
 
         return Jwts.builder().subject(authentication.getEmail())
-                .claim("userId", authentication.getId())
-                .claim("roles", authorities)
+                .claim(USER_ID_CLAIM, authentication.getId())
+                .claim(ROLES_CLAIM, authorities)
                 .expiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION_IN_MS))
-                .signWith(jwtPrivateKey, SignatureAlgorithm.RS512)
+                .signWith(jwtPrivateKey)
+                .compact();
+    }
+
+    @Override
+    public String generateToken(Long id, String email){
+        return Jwts.builder()
+                .subject(email)
+                .claim(USER_ID_CLAIM, id)
+                .claim(ROLES_CLAIM, "USER")
+                .expiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION_IN_MS))
+                .signWith(jwtPrivateKey)
                 .compact();
     }
 
@@ -77,8 +86,8 @@ public class JwtProvider implements IJwtProvider {
                 .parseSignedClaims(token)
                 .getPayload();
         String email = claims.getSubject();
-        Long userId = claims.get("userId", Long.class);
-        List<GrantedAuthority> authorities = Arrays.stream(claims.get("roles").toString().split(","))
+        Long userId = claims.get(USER_ID_CLAIM, Long.class);
+        List<GrantedAuthority> authorities = Arrays.stream(claims.get(ROLES_CLAIM).toString().split(","))
                 .map(role -> role.startsWith("ROLE_") ? role : "ROLE_" + role)
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
