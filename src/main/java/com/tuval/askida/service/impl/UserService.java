@@ -4,6 +4,7 @@ import com.tuval.askida.dto.OwnerDTO;
 import com.tuval.askida.mapper.UserMapper;
 import com.tuval.askida.model.Owner;
 import com.tuval.askida.repository.IUserRepository;
+import com.tuval.askida.request.GetUserRequest;
 import com.tuval.askida.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,5 +30,10 @@ public class UserService implements IUserService {
     @Override
     public Optional<Owner> findByEmail(String email){
         return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public OwnerDTO getUser(GetUserRequest request){
+        return userMapper.toDTO(userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new RuntimeException("User Not Found!")));
     }
 }
