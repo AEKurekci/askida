@@ -1,5 +1,6 @@
 package com.tuval.askida.service.impl;
 
+import com.tuval.askida.dto.JwtToken;
 import com.tuval.askida.request.SignInRequest;
 import com.tuval.askida.security.UserPrincipal;
 import com.tuval.askida.security.jwt.IJwtProvider;
@@ -17,7 +18,7 @@ public class AuthenticationService implements IAuthenticationService {
     private final IJwtProvider jwtProvider;
 
     @Override
-    public String signInAndReturnJWT(SignInRequest signInRequest){
+    public JwtToken signInAndReturnJWT(SignInRequest signInRequest){
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword())
         );

@@ -1,13 +1,14 @@
 package com.tuval.askida.security.jwt;
 
+import com.tuval.askida.dto.JwtToken;
 import com.tuval.askida.security.UserPrincipal;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.Authentication;
 
 public interface IJwtProvider {
-    String generateToken(UserPrincipal authentication);
+    JwtToken generateToken(UserPrincipal authentication);
 
-    String generateToken(Long id, String email);
+    JwtToken generateToken(Long id, String email);
 
     Authentication getAuthentication(HttpServletRequest request);
 

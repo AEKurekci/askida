@@ -1,5 +1,6 @@
 package com.tuval.askida.security.jwt.impl;
 
+import com.tuval.askida.dto.JwtToken;
 import com.tuval.askida.security.UserPrincipal;
 import com.tuval.askida.security.jwt.IJwtProvider;
 import io.jsonwebtoken.Claims;
@@ -19,7 +20,10 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -50,28 +54,38 @@ public class JwtProvider implements IJwtProvider {
     }
 
     @Override
-    public String generateToken(UserPrincipal authentication){
+    public JwtToken generateToken(UserPrincipal authentication){
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining());
-
-        return Jwts.builder().subject(authentication.getEmail())
+        Date expiration = new Date(System.currentTimeMillis() + JWT_EXPIRATION_IN_MS);
+        String token = Jwts.builder().subject(authentication.getEmail())
                 .claim(USER_ID_CLAIM, authentication.getId())
                 .claim(ROLES_CLAIM, authorities)
-                .expiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION_IN_MS))
+                .expiration(expiration)
                 .signWith(jwtPrivateKey)
                 .compact();
+
+        return JwtToken.builder()
+                .token(token)
+                .expiration(expiration)
+                .build();
     }
 
     @Override
-    public String generateToken(Long id, String email){
-        return Jwts.builder()
+    public JwtToken generateToken(Long id, String email){
+        Date expiration = new Date(System.currentTimeMillis() + JWT_EXPIRATION_IN_MS);
+        String token = Jwts.builder()
                 .subject(email)
                 .claim(USER_ID_CLAIM, id)
                 .claim(ROLES_CLAIM, "USER")
-                .expiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION_IN_MS))
+                .expiration(expiration)
                 .signWith(jwtPrivateKey)
                 .compact();
+        return JwtToken.builder()
+                .token(token)
+                .expiration(expiration)
+                .build();
     }
 
     @Override

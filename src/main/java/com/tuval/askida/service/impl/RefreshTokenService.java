@@ -1,5 +1,6 @@
 package com.tuval.askida.service.impl;
 
+import com.tuval.askida.dto.JwtToken;
 import com.tuval.askida.dto.OwnerDTO;
 import com.tuval.askida.dto.RefreshTokenDTO;
 import com.tuval.askida.mapper.RefreshTokenMapper;
@@ -67,12 +68,15 @@ public class RefreshTokenService implements IRefreshTokenService {
                 .map(refreshToken -> refreshTokenMapper.toModel(verifyExpiration(refreshTokenMapper.toDTO(refreshToken))))
                 .map(refreshToken -> {
                     OwnerDTO user = userMapper.toDTO(refreshToken.getUser());
-                    String accessToken = jwtProvider.generateToken(user.getId(), user.getEmail());
+                    JwtToken jwtToken = jwtProvider.generateToken(user.getId(), user.getEmail());
                     RefreshTokenDTO updatedRefreshToken = updateRefreshToken(refreshTokenMapper.toDTO(refreshToken));
                     return JwtResponse
                             .builder()
-                            .accessToken(accessToken)
+                            .accessToken(jwtToken.getToken())
+                            .expiration(jwtToken.getExpiration())
                             .refreshToken(updatedRefreshToken.getToken())
+                            .email(user.getEmail())
+                            .userId(user.getId())
                             .build();
                 })
                 .orElseThrow(() -> new RuntimeException("Refresh token not found in DB"));

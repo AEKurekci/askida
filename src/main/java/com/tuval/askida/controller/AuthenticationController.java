@@ -1,6 +1,7 @@
 package com.tuval.askida.controller;
 
 import com.tuval.askida.constant.ApiEndpoints;
+import com.tuval.askida.dto.JwtToken;
 import com.tuval.askida.dto.OwnerDTO;
 import com.tuval.askida.dto.RefreshTokenDTO;
 import com.tuval.askida.request.RefreshTokenRequest;
@@ -35,11 +36,14 @@ public class AuthenticationController {
 
     @PostMapping("sign-in")
     public ResponseEntity<JwtResponse> signIn(@RequestBody SignInRequest request){
-        String accessToken = authenticationService.signInAndReturnJWT(request);
+        JwtToken jwtToken = authenticationService.signInAndReturnJWT(request);
         RefreshTokenDTO refreshToken = refreshTokenService.createRefreshToken(request.getEmail());
         return new ResponseEntity<>(JwtResponse.builder()
-                .accessToken(accessToken)
+                .accessToken(jwtToken.getToken())
+                .expiration(jwtToken.getExpiration())
                 .refreshToken(refreshToken.getToken())
+                .email(request.getEmail())
+                .userId(refreshToken.getUser().getId())
                 .build(), HttpStatus.OK);
     }
 
